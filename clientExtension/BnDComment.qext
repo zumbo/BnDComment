@@ -1,0 +1,15 @@
+{
+    "name": "BnDComment",
+    "description": "A simple extension which enables commenting",
+    "type": "visualization",
+    "version": "0.9.0",
+    "icon": "extension",
+    "author": "Marcel Zumstein, Branko Petric, Business & Decision",
+    "homepage": "",
+    "keywords": "qlik-sense, visualization, commenting, collaboration",
+    "license": "",
+    "repository": "",
+    "dependencies": {
+        "qlik-sense": ">=3.0.x"
+    }
+}
