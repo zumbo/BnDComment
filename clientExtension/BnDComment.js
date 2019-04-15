@@ -246,7 +246,16 @@ define([
 					function getComments() {
 						restApi.read(window['ref' + layout.qInfo.qId].readRef, refreshComments);
 					}
-
+					
+					function formatDate(date) {
+						var year = date.getFullYear();
+						var month = (date.getMonth() + 1).toString().padStart(2, '0');
+						var day = date.getDate().toString().padStart(2, '0');
+						var hours = date.getHours().toString().padStart(2, '0');
+						var minutes = date.getMinutes().toString().padStart(2, '0');
+						return year + "-" + month + "-" + day + " " + hours + ":" + minutes;
+					}
+		
 					async function refreshComments(reply) {
 						// First emply table
 						await clearContent();
@@ -254,19 +263,14 @@ define([
 
 						// Loop through comments and append the table
 						reply.data.forEach(function (node) {
-							var date = new Date(node.time);
-							var year = date.getFullYear();
-							var month = date.getMonth() + 1;
-							var day = date.getDate();
-							var hours = date.getHours();
-							var minutes = date.getMinutes();
-							var finalDate = year + "-" + month + "-" + day + " " + hours + ":" + minutes;
+							var date = formatDate(new Date(node.time));
+
 							if (layout.commentView == 'dt') {
 								$("#fireTable_" + layout.qInfo.qId).append(
 									'<tr>' +
 									'<td class="fireTdLeft_' + layout.qInfo.qId + '">' + node.user + '</td>' +
 									'<td class="fireTd_' + layout.qInfo.qId + '">' + node.comment + '</td>' +
-									'<td class="fireTd_' + layout.qInfo.qId + '"id=' + node.user + '_' + node._id + '>' + finalDate + '&nbsp&nbsp' + '</td>' +
+									'<td class="fireTd_' + layout.qInfo.qId + '"id=' + node.user + '_' + node._id + '>' + date + '&nbsp&nbsp' + '</td>' +
 									'</tr>');
 							}
 							else if (layout.commentView == 'st') {
@@ -419,9 +423,9 @@ define([
 				}
 
 				//needed for export
-				//return qlik.Promise.resolve();
+				return qlik.Promise.resolve();
 				
-				return defer.promise;
+				//return defer.promise;
 			}
 		};
 	});
