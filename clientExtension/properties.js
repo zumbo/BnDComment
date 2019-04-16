@@ -63,9 +63,6 @@ define([], function () {
         uses: "settings",
         items: {
             commentView: commentView,
-            redColor: redColor,
-            amberColor: amberColor,
-            greenColor: greenColor,
             fontSize: fontSize
         }
     };

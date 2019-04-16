@@ -38,22 +38,13 @@ define([
 			paint: async function ($element, layout) {
 				var defer = qlik.Promise.defer();
 				
-				if (window['oldFontSize' + layout.qInfo.qId] != layout.fontSize ||
-					window['oldRedColor' + layout.qInfo.qId] != layout.redColor ||
-					window['oldAmberColor' + layout.qInfo.qId] != layout.amberColor ||
-					window['oldGreenColor' + layout.qInfo.qId] != layout.greenColor) {
+				if (window['oldFontSize' + layout.qInfo.qId] != layout.fontSize) {
 					$(`#fireCss_${layout.qInfo.qId}`).remove();
 					css = fireCss.replace(/fontVariable/g, layout.fontSize);
 					css = fireCss.replace(/fontVariable/g, layout.fontSize);
 					css = css.replace(/LAYOUTID/g, layout.qInfo.qId);
-					css = css.replace(/redColor/g, layout.redColor);
-					css = css.replace(/amberColor/g, layout.amberColor);
-					css = css.replace(/greenColor/g, layout.greenColor);
 					$(`<style id="fireCss_${layout.qInfo.qId}">`).html(css).appendTo("head");
 					window['oldFontSize' + layout.qInfo.qId] = layout.fontSize;
-					window['oldRedColor' + layout.qInfo.qId] = layout.oldRedColor;
-					window['oldAmberColor' + layout.qInfo.qId] = layout.oldAmberColor;
-					window['oldGreenColor' + layout.qInfo.qId] = layout.oldGreenColor;
 				}
 
 				if(window['oldCommentView' + layout.qInfo.qId] != layout.commentView) {
