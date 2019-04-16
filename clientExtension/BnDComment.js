@@ -247,7 +247,26 @@ define([
 						restApi.read(window['ref' + layout.qInfo.qId].readRef, refreshComments);
 					}
 					
-					function formatDate(date) {
+					function formatKey(key) {
+					    key = decodeURI(key);
+						
+						var lastSeparator = key.lastIndexOf('_');
+						if (lastSeparator != -1) {
+							key = key.substring(lastSeparator + 1);
+						}
+						
+						if (key.startsWith('--')) {
+							key = key.substring(2);
+						} 
+						if (key.endsWith('--')) {
+							key = key.substring(0, key.length - 2);
+						}
+						
+						return key;
+					}
+					
+					function formatDate(time) {
+						var date = new Date(time);
 						var year = date.getFullYear();
 						var month = (date.getMonth() + 1).toString().padStart(2, '0');
 						var day = date.getDate().toString().padStart(2, '0');
@@ -263,14 +282,14 @@ define([
 
 						// Loop through comments and append the table
 						reply.data.forEach(function (node) {
-							var date = formatDate(new Date(node.time));
 
 							if (layout.commentView == 'dt') {
 								$("#fireTable_" + layout.qInfo.qId).append(
 									'<tr>' +
-									'<td class="fireTdLeft_' + layout.qInfo.qId + '">' + node.user + '</td>' +
+									'<td class="fireTdLeft_' + layout.qInfo.qId + '">' + formatKey(node.key) + '</td>' +
+									'<td class="fireTd_' + layout.qInfo.qId + '">' + node.user + '</td>' +
 									'<td class="fireTd_' + layout.qInfo.qId + '">' + node.comment + '</td>' +
-									'<td class="fireTd_' + layout.qInfo.qId + '"id=' + node.user + '_' + node._id + '>' + date + '&nbsp&nbsp' + '</td>' +
+									'<td class="fireTd_' + layout.qInfo.qId + '"id=' + node.user + '_' + node._id + '>' + formatDate(node.time) + '&nbsp&nbsp' + '</td>' +
 									'</tr>');
 							}
 							else if (layout.commentView == 'st') {
@@ -343,7 +362,12 @@ define([
 					// Function to create table header
 					function createCommentView() {
 						if (layout.commentView == 'dt') {
-							$('#fireContent_' + layout.qInfo.qId).append('<table id="fireTable_' + layout.qInfo.qId + '" class="fire-table_' + layout.qInfo.qId + '"><tr><th class="fireThLeft_' + layout.qInfo.qId + '">User</th><th class="fireTh_' + layout.qInfo.qId + '">Comments</th><th class="fireTh_' + layout.qInfo.qId + '">Time</th></tr></table>');
+							$('#fireContent_' + layout.qInfo.qId).append(
+							'<table id="fireTable_' + layout.qInfo.qId + '" class="fire-table_' + layout.qInfo.qId + '"><tr>' +
+							'<th class="fireThLeft_' + layout.qInfo.qId + '">Key</th>' +
+							'<th class="fireTh_' + layout.qInfo.qId + '">User</th>' +
+							'<th class="fireTh_' + layout.qInfo.qId + '">Comments</th>' +
+							'<th class="fireTh_' + layout.qInfo.qId + '">Time</th></tr></table>');
 						}
 						else if (layout.commentView == 'st') {
 							$('#fireContent_' + layout.qInfo.qId).append('<table id="fireTable_' + layout.qInfo.qId + '" class="fire-table_' + layout.qInfo.qId + '"><tr><th class="fireThLeft_' + layout.qInfo.qId + '">Comment</th></tr>');
