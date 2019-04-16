@@ -21,14 +21,13 @@ define([
 	'qlik',
 	'jquery',
 	'text!./fireComment.html',
-	'text!./trafficLight.html',
 	'text!./leonardo-ui.css',
 	'text!./fireComment.css',
 	'./restapi',
 	'./leonardo-ui',
 	'./properties'
 ],
-	function (qlik, $, html, trafficHtml, leoCss, fireCss, restApi, leoJs, prop) {
+	function (qlik, $, html, leoCss, fireCss, restApi, leoJs, prop) {
 		return {
 			definition: prop,
 			support: {
@@ -64,12 +63,7 @@ define([
 					$element.empty();
 					window['oldCommentView' + layout.qInfo.qId] = layout.commentView;
 				}
-				if(layout.commentView =='tfl'){
-					var fireIconPanel =  $('#fireIconPanel2_' + layout.qInfo.qId);
-				}
-				else {
-					var fireIconPanel = $('#fireIconPanel_' + layout.qInfo.qId);
-				}
+				var fireIconPanel = $('#fireIconPanel_' + layout.qInfo.qId);
 
 				if (!fireIconPanel.length) {
 					
@@ -77,15 +71,9 @@ define([
 					window['commentRef' + layout.qInfo.qId] = null;
 					window['ref' + layout.qInfo.qId] = null;
 					window['oldRef' + layout.qInfo.qId] = null;
-					if (layout.commentView == 'tfl') {
-						finalHtml = trafficHtml.replace(/LAYOUTID/g, layout.qInfo.qId);
-						$element.append(finalHtml);
-					}
-					else {
-						finalHtml = html.replace(/LAYOUTID/g, layout.qInfo.qId);
-						$element.append(finalHtml);
-					}
-
+					finalHtml = html.replace(/LAYOUTID/g, layout.qInfo.qId);
+					$element.append(finalHtml);
+					
 					// Get current user
 					var global = qlik.getGlobal(config);
 					global.getAuthenticatedUser(function (reply) {
@@ -303,32 +291,7 @@ define([
 								$("#fireUl_" + layout.qInfo.qId).append('<li class="fireLi_' + layout.qInfo.qId + '" id=' + node.user + '_' + node._id + '>' + '&nbsp&nbsp' +
 									node.comment + '</li><br>');
 							}
-							else if (layout.commentView == 'tfl') {
-								switch (node.comment) {
-									case 1:
-										$(`#green_${layout.qInfo.qId}`).removeClass().addClass('green_' + layout.qInfo.qId);
-										$(`#yellow_${layout.qInfo.qId}`).removeClass().addClass('none_' + layout.qInfo.qId);
-										$(`#red_${layout.qInfo.qId}`).removeClass().addClass('none_' + layout.qInfo.qId);
-										break;
-									case 2:
-										$(`#green_${layout.qInfo.qId}`).removeClass().addClass('none_' + layout.qInfo.qId);
-										$(`#yellow_${layout.qInfo.qId}`).removeClass().addClass('yellow_' + layout.qInfo.qId);
-										$(`#red_${layout.qInfo.qId}`).removeClass().addClass('none_' + layout.qInfo.qId);
-										break;
-									case 3:
-										$(`#green_${layout.qInfo.qId}`).removeClass().addClass('none_' + layout.qInfo.qId);
-										$(`#yellow_${layout.qInfo.qId}`).removeClass().addClass('none_' + layout.qInfo.qId);
-										$(`#red_${layout.qInfo.qId}`).removeClass().addClass('red_' + layout.qInfo.qId);
-										break;
-									default:
-										$(`#green_${layout.qInfo.qId}`).removeClass().addClass('none_' + layout.qInfo.qId);
-										$(`#yellow_${layout.qInfo.qId}`).removeClass().addClass('none_' + layout.qInfo.qId);
-										$(`#red_${layout.qInfo.qId}`).removeClass().addClass('none_' + layout.qInfo.qId);
-								}
-							}
 							$('#' + node.user + '_' + node._id).append('<span class="lui-icon lui-icon--bin" aria-hidden="true" style="display: none;"></span>');
-
-
 
 							if (node.user == currentUser && editMode == 1) {
 								$('#' + node.user + '_' + node._id).find('.lui-icon.lui-icon--bin').show();

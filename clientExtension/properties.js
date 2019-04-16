@@ -15,10 +15,6 @@ define([], function () {
         {
             value: "stb",
             label: "Simple Textbox"
-        },
-        {
-            value: "tfl",
-            label: "Traffic Light"
         }],
         defaultValue: "dt"
     };
@@ -62,40 +58,6 @@ define([], function () {
         type: "string",
         expression: "optional",
         defaultValue: "12px",
-        show: function (data) {
-            return data.commentView !== 'tfl';
-        }
-
-    };
-    var redColor = {
-        ref: "redColor",
-        label: "Red Color",
-        type: "string",
-        expression: "optional",
-        defaultValue: "red",
-        show: function (data) {
-            return data.commentView == 'tfl';
-        }
-    };
-    var amberColor = {
-        ref: "amberColor",
-        label: "Amber Color",
-        type: "string",
-        expression: "optional",
-        defaultValue: "yellow",
-        show: function (data) {
-            return data.commentView == 'tfl';
-        }
-    };
-    var greenColor = {
-        ref: "greenColor",
-        label: "Green Color",
-        type: "string",
-        expression: "optional",
-        defaultValue: "green",
-        show: function (data) {
-            return data.commentView == 'tfl';
-        }
     };
     var appearanceSection = {
         uses: "settings",
