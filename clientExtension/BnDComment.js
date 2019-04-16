@@ -6,7 +6,6 @@ var config = {
 	isSecure: window.location.protocol === "https:"
 };
 
-
 var currentUser;
 var oldFontSize;
 var oldCommentView = null;
@@ -36,7 +35,6 @@ define([
 				exportData: true
 			},
 			paint: async function ($element, layout) {
-				var defer = qlik.Promise.defer();
 				
 				if (window['oldFontSize' + layout.qInfo.qId] != layout.fontSize) {
 					$(`#bndcCss_${layout.qInfo.qId}`).remove();
@@ -201,6 +199,9 @@ define([
 							for (let dim of dimensions) {
 								//console.log('dim: ' + dim.qGroupFieldDefs[0]);
 								var fieldSelection = await getFieldSelections(dim.qGroupFieldDefs[0]);
+								if (selectionKey != '') {
+									selectionKey += '|';
+								}
 								selectionKey += fieldSelection;
 							}
 							console.log('sel: ' + selectionKey);
@@ -223,7 +224,22 @@ define([
 
 					// Function to retrieve comments and show them in the table
 					function getComments() {
-						restApi.read(window['ref' + layout.qInfo.qId].readRef, refreshComments);
+						restApi.read(window['ref' + layout.qInfo.qId].readRef, refreshComments, onDbError);
+					}
+					
+					async function onDbError() {
+						await clearContent();
+						await createCommentView();
+						errorMessage = 'Keine Datenbankverbindung!';
+
+						if (layout.commentView == 'dt'|| layout.commentView == 'st') {
+							$("#bndcTable_" + layout.qInfo.qId).append(
+								'<tr>' +
+								'<td class="bndcTdLeft_' + layout.qInfo.qId + '">' + errorMessage + '</td>' +
+								'</tr>');
+						} else if (layout.commentView == 'stb') {
+							$("#bndcUl_" + layout.qInfo.qId).append('<li class="bndcLi_' + layout.qInfo.qId + '">' + errorMessage + '</li><br>');
+						}
 					}
 					
 					function formatKey(key) {
@@ -295,10 +311,6 @@ define([
 								})
 							}
 						})
-
-						setTimeout(function() {
-							defer.resolve();
-						}, 1000); //one second delay
 					}
 
 					// Delete comments
@@ -402,8 +414,6 @@ define([
 
 				//needed for export
 				return qlik.Promise.resolve();
-				
-				//return defer.promise;
 			}
 		};
 	});

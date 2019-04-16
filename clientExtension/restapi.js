@@ -13,13 +13,13 @@ define([], function () {
 				error: function(jqXHR, textStatus, errorThrown) { console.error(textStatus + ' - ' + errorThrown ); }
 			});
 		},
-	    read: function(key, callback) {
+	    read: function(key, callback, errorCallback) {
 			$.ajax({
 				url: url + encodeURI(key),
 				type: 'get',
 				crossDomain: true,
 				success: callback,
-				error: function(jqXHR, textStatus, errorThrown) { console.error(textStatus + ' - ' + errorThrown ); }
+				error: function(jqXHR, textStatus, errorThrown) { errorCallback(); console.error(textStatus + ' - ' + errorThrown ); }
 			}); /*
 			var node = {time: 0, user: 'zumbo', comment: 'Hello World', _id : 1};
 			var reply = {data: [node]}; */
