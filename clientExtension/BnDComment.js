@@ -20,14 +20,14 @@ var oldRef;
 define([
 	'qlik',
 	'jquery',
-	'text!./fireComment.html',
+	'text!./bndComment.html',
 	'text!./leonardo-ui.css',
-	'text!./fireComment.css',
+	'text!./bndComment.css',
 	'./restapi',
 	'./leonardo-ui',
 	'./properties'
 ],
-	function (qlik, $, html, leoCss, fireCss, restApi, leoJs, prop) {
+	function (qlik, $, html, leoCss, bndcCss, restApi, leoJs, prop) {
 		return {
 			definition: prop,
 			support: {
@@ -39,11 +39,11 @@ define([
 				var defer = qlik.Promise.defer();
 				
 				if (window['oldFontSize' + layout.qInfo.qId] != layout.fontSize) {
-					$(`#fireCss_${layout.qInfo.qId}`).remove();
-					css = fireCss.replace(/fontVariable/g, layout.fontSize);
-					css = fireCss.replace(/fontVariable/g, layout.fontSize);
+					$(`#bndcCss_${layout.qInfo.qId}`).remove();
+					css = bndcCss.replace(/fontVariable/g, layout.fontSize);
+					css = bndcCss.replace(/fontVariable/g, layout.fontSize);
 					css = css.replace(/LAYOUTID/g, layout.qInfo.qId);
-					$(`<style id="fireCss_${layout.qInfo.qId}">`).html(css).appendTo("head");
+					$(`<style id="bndcCss_${layout.qInfo.qId}">`).html(css).appendTo("head");
 					window['oldFontSize' + layout.qInfo.qId] = layout.fontSize;
 				}
 
@@ -54,9 +54,9 @@ define([
 					$element.empty();
 					window['oldCommentView' + layout.qInfo.qId] = layout.commentView;
 				}
-				var fireIconPanel = $('#fireIconPanel_' + layout.qInfo.qId);
+				var bndcIconPanel = $('#bndcIconPanel_' + layout.qInfo.qId);
 
-				if (!fireIconPanel.length) {
+				if (!bndcIconPanel.length) {
 					
 					window['oldCommentRef' + layout.qInfo.qId] = null;
 					window['commentRef' + layout.qInfo.qId] = null;
@@ -77,10 +77,10 @@ define([
 					// On click plus icon
 					$('#addButton_' + layout.qInfo.qId).click(function () {
 						$('#editButton_' + layout.qInfo.qId).hide();
-						$('#fireTextArea_' + layout.qInfo.qId).val('');
-						$('#fireContainer_' + layout.qInfo.qId).show();
+						$('#bndcTextArea_' + layout.qInfo.qId).val('');
+						$('#bndcContainer_' + layout.qInfo.qId).show();
 						$('#addButton_' + layout.qInfo.qId).hide();
-						$('#fireContent_' + layout.qInfo.qId).hide();
+						$('#bndcContent_' + layout.qInfo.qId).hide();
 					});
 
 
@@ -116,18 +116,18 @@ define([
 					// On click cancel button
 					$('#cancelButton_' + layout.qInfo.qId).click(function () {
 						$('#editButton_' + layout.qInfo.qId).show();
-						$('#fireContainer_' + layout.qInfo.qId).hide();
+						$('#bndcContainer_' + layout.qInfo.qId).hide();
 						$('#addButton_' + layout.qInfo.qId).show();
-						$('#fireContent_' + layout.qInfo.qId).show();
+						$('#bndcContent_' + layout.qInfo.qId).show();
 					});
 
 					// On click save button write to DB
 					$('#saveButton_' + layout.qInfo.qId).click(async function () {
 						milliseconds = await (new Date).getTime();
-						comments = await writeNewComment(milliseconds, currentUser, $('#fireTextArea_' + layout.qInfo.qId).val());
-						$('#fireContainer_' + layout.qInfo.qId).hide();
+						comments = await writeNewComment(milliseconds, currentUser, $('#bndcTextArea_' + layout.qInfo.qId).val());
+						$('#bndcContainer_' + layout.qInfo.qId).hide();
 						$('#addButton_' + layout.qInfo.qId).show();
-						$('#fireContent_' + layout.qInfo.qId).show();
+						$('#bndcContent_' + layout.qInfo.qId).show();
 						$('#editButton_' + layout.qInfo.qId).show();
 					});
 
@@ -199,11 +199,11 @@ define([
 							var dimensions = layout.qHyperCube.qDimensionInfo;
 							var selectionKey = '';
 							for (let dim of dimensions) {
-								console.log(dim.qGroupFieldDefs[0]);
+								//console.log('dim: ' + dim.qGroupFieldDefs[0]);
 								var fieldSelection = await getFieldSelections(dim.qGroupFieldDefs[0]);
 								selectionKey += fieldSelection;
 							}
-							console.log(selectionKey);
+							console.log('sel: ' + selectionKey);
 							resolve(selectionKey);
 						})
 					}
@@ -263,23 +263,23 @@ define([
 						reply.data.forEach(function (node) {
 
 							if (layout.commentView == 'dt') {
-								$("#fireTable_" + layout.qInfo.qId).append(
+								$("#bndcTable_" + layout.qInfo.qId).append(
 									'<tr>' +
-									'<td class="fireTdLeft_' + layout.qInfo.qId + '">' + formatKey(node.key) + '</td>' +
-									'<td class="fireTd_' + layout.qInfo.qId + '">' + node.user + '</td>' +
-									'<td class="fireTd_' + layout.qInfo.qId + '">' + node.comment + '</td>' +
-									'<td class="fireTd_' + layout.qInfo.qId + '"id=' + node.user + '_' + node._id + '>' + formatDate(node.time) + '&nbsp&nbsp' + '</td>' +
+									'<td class="bndcTdLeft_' + layout.qInfo.qId + '">' + formatKey(node.key) + '</td>' +
+									'<td class="bndcTd_' + layout.qInfo.qId + '">' + node.user + '</td>' +
+									'<td class="bndcTd_' + layout.qInfo.qId + '">' + node.comment + '</td>' +
+									'<td class="bndcTd_' + layout.qInfo.qId + '"id=' + node.user + '_' + node._id + '>' + formatDate(node.time) + '&nbsp&nbsp' + '</td>' +
 									'</tr>');
 							}
 							else if (layout.commentView == 'st') {
-								$("#fireTable_" + layout.qInfo.qId).append(
+								$("#bndcTable_" + layout.qInfo.qId).append(
 									'<tr>' +
-									'<td class="fireTdLeft_' + layout.qInfo.qId + '" id=' + node.user + '_' + node._id + '>' + node.comment + '&nbsp&nbsp' + '</td>' +
+									'<td class="bndcTdLeft_' + layout.qInfo.qId + '" id=' + node.user + '_' + node._id + '>' + node.comment + '&nbsp&nbsp' + '</td>' +
 									'</tr>');
 							}
 
 							else if (layout.commentView == 'stb') {
-								$("#fireUl_" + layout.qInfo.qId).append('<li class="fireLi_' + layout.qInfo.qId + '" id=' + node.user + '_' + node._id + '>' + '&nbsp&nbsp' +
+								$("#bndcUl_" + layout.qInfo.qId).append('<li class="bndcLi_' + layout.qInfo.qId + '" id=' + node.user + '_' + node._id + '>' + '&nbsp&nbsp' +
 									node.comment + '</li><br>');
 							}
 							$('#' + node.user + '_' + node._id).append('<span class="lui-icon lui-icon--bin" aria-hidden="true" style="display: none;"></span>');
@@ -309,25 +309,25 @@ define([
 					// Function to clear contents of table/textbox
 					function clearContent() {
 						return new Promise(function(resolve, reject){
-							resolve($('#fireContent_' + layout.qInfo.qId).empty());
+							resolve($('#bndcContent_' + layout.qInfo.qId).empty());
 						})
 					}
 
 					// Function to create table header
 					function createCommentView() {
 						if (layout.commentView == 'dt') {
-							$('#fireContent_' + layout.qInfo.qId).append(
-							'<table id="fireTable_' + layout.qInfo.qId + '" class="fire-table_' + layout.qInfo.qId + '"><tr>' +
-							'<th class="fireThLeft_' + layout.qInfo.qId + '">Key</th>' +
-							'<th class="fireTh_' + layout.qInfo.qId + '">User</th>' +
-							'<th class="fireTh_' + layout.qInfo.qId + '">Comments</th>' +
-							'<th class="fireTh_' + layout.qInfo.qId + '">Time</th></tr></table>');
+							$('#bndcContent_' + layout.qInfo.qId).append(
+							'<table id="bndcTable_' + layout.qInfo.qId + '" class="bndc-table_' + layout.qInfo.qId + '"><tr>' +
+							'<th class="bndcThLeft_' + layout.qInfo.qId + '">Key</th>' +
+							'<th class="bndcTh_' + layout.qInfo.qId + '">User</th>' +
+							'<th class="bndcTh_' + layout.qInfo.qId + '">Comments</th>' +
+							'<th class="bndcTh_' + layout.qInfo.qId + '">Time</th></tr></table>');
 						}
 						else if (layout.commentView == 'st') {
-							$('#fireContent_' + layout.qInfo.qId).append('<table id="fireTable_' + layout.qInfo.qId + '" class="fire-table_' + layout.qInfo.qId + '"><tr><th class="fireThLeft_' + layout.qInfo.qId + '">Comment</th></tr>');
+							$('#bndcContent_' + layout.qInfo.qId).append('<table id="bndcTable_' + layout.qInfo.qId + '" class="bndc-table_' + layout.qInfo.qId + '"><tr><th class="bndcThLeft_' + layout.qInfo.qId + '">Comment</th></tr>');
 						}
 						else if (layout.commentView == 'stb') {
-							$('#fireContent_' + layout.qInfo.qId).append('<p id="fireP_' + layout.qInfo.qId + '" class="fireP_' + layout.qInfo.qId + '"><ul id="fireUl_' + layout.qInfo.qId + '"></ul></p>');
+							$('#bndcContent_' + layout.qInfo.qId).append('<p id="bndcP_' + layout.qInfo.qId + '" class="bndcP_' + layout.qInfo.qId + '"><ul id="bndcUl_' + layout.qInfo.qId + '"></ul></p>');
 						}
 					}
 
@@ -361,7 +361,7 @@ define([
 						}
 					}
 					if (layout.commentLevel == 'auds') {
-						console.log(currentSelections);
+						console.log('curSel: ' + currentSelections);
 						ref = {
 							"createRef": 'CommentsAUS_' + appId + '_' + layout.qInfo.qId + '_' + currentDimensionSelections, // + '_' + time,
 							"readRef": 'CommentsAUS_' + appId + '_' + layout.qInfo.qId + '_' + currentDimensionSelections,
